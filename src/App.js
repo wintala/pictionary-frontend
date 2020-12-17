@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import socketIOClient from "socket.io-client"
+import React, {useState, useEffect, useRef} from "react"
+import Chat from "./components/chat";
+import Canvas from "./components/canvas";
+import StartScreen from "./components/start-screen"
+import NextRoundInfo from "./components/next-round-info"
+
+const socket = socketIOClient("http://localhost:3001")
 
 function App() {
+  const name = useRef()
+  const [game, setGame] = useState(null)
+
+
+
+  useEffect(() => {
+    socket.on('gameInfo', (data) => {
+      setGame(data)
+    })
+    return () => socket.disconnect()
+  }, [])
+
+
+  const turnplayerName = () => {
+    const player = game.players.find(p => p.id === game.turnPlayer)
+    if (player) {
+      return player.name
+    }
+    else {
+      return null
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  <>
+    {!game ?
+    <>
+      <StartScreen socket={socket} name={name} />
+    </> : 
+    <>
+    <div><pre>{JSON.stringify(game, undefined, 2)}</pre></div>
+    <NextRoundInfo socket={socket} />
+    <Canvas socket={socket} myTurn={(name.current === turnplayerName()) && (game.timeLeft !== 0)} />
+    <Chat socket={socket} />
+    </>}
+  </>
+  )
 }
 
 export default App;
