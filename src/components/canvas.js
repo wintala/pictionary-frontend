@@ -100,7 +100,7 @@ const Canvas = ({socket, myTurn}) => {
 
 		const canvas = canvasRef.current
 		contextRef.current = canvas.getContext('2d')
-		canvas.width = 800
+		canvas.width = 700
 		canvas.height = 500
 	}, [socket])
 
@@ -116,15 +116,17 @@ const Canvas = ({socket, myTurn}) => {
   }
 	
 	return(
-		<div>
-			<canvas id="can" style={{border: "3px solid red", cursor: `url(${CurrentIcon()}) 0 50, auto`}} ref={canvasRef} 
+		<div id="canvas-wrap">
+			<canvas id="can" style={{backgroundColor: "white", borderRadius: "10px", cursor: `url(${CurrentIcon()}) 0 50, auto`}} 
+			ref={canvasRef} 
 			onMouseDown={handleStartDraw}
 			onMouseUp={() => setDrawing(false)}
 			onMouseMove={handleDraw}
 			/>
-			<div>
-				<button onClick={handleClearCanvas}>Clear</button>
-				<label htmlFor="thickness">Thickness</label>
+			<div id="controllers">
+				<button onClick={handleClearCanvas}>Tyhjennä</button>
+				<div>
+					<label htmlFor="thickness">Paksuus</label>
           <input 
             type="range" 
             id="thickness" 
@@ -133,7 +135,9 @@ const Canvas = ({socket, myTurn}) => {
             value={brush.thickness}
             onChange={({ target }) => setBrush({...brush, thickness: parseInt(target.value)})}
           />
-					<label htmlFor="color">Color</label>
+				</div>
+				<div>
+					<label htmlFor="color">Väri</label>
 					<input
 						type="color" 
 						id="color" 
@@ -141,7 +145,12 @@ const Canvas = ({socket, myTurn}) => {
 						value={brush.color}
 						onChange={({ target }) => setBrush({...brush, color: target.value})}
 					/>
-					<button onClick={() => setErasing(!erasing)}>{erasing ? "draw" : "erase"}</button>
+				</div>
+					<div 
+						id="pen-eraser-change" 
+						onClick={() => setErasing(!erasing)}
+						style={{backgroundImage: erasing ? `url(${BrushSmall})` : `url(${Eraser})`}}>
+					</div>
 			</div>
 		</div>
 	)

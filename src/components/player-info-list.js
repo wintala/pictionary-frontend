@@ -1,28 +1,28 @@
 import React from "react"
 
-const PlayerInfoList = ({players, turnPlayerName}) => {
+const PlayerInfoList = ({players, turnPlayer}) => {
 
 	if (!players) {
 		return null
 	}
 
 	return (
-		<table>
+		<table id="player-info">
 			<tbody>
 				<tr>
 					<th>
-						Name
+						Nimi
 					</th>
 					<th>
-						Points
+						Pisteet
 					</th>
 					<th>
-						Points this round
+						Kierroksen pisteet
 					</th>
 					<th>
 					</th>
 				</tr>
-				{players.map(p =>
+				{players.sort((a, b) => (b.pointsTotal - a.pointsTotal)).map(p =>
 				<tr key={p.id}>
 					<td>
 						{p.name}
@@ -34,7 +34,8 @@ const PlayerInfoList = ({players, turnPlayerName}) => {
 						{p.pointsCurrentRound}
 					</td>
 					<td>
-						{turnPlayerName === p.name ? "drawing" : ""}
+						{turnPlayer === p.id ? 
+						<div id="drawer-icon"></div>: ""}
 					</td>
 				</tr>
 				)}

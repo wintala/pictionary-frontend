@@ -4,6 +4,8 @@
   --light-blue2: rgb(152, 217, 213);
   --orange-light: rgb(255, 157, 73);
   --orange-dark: rgb(255, 110, 29);
+  --transparent-light-blue: rgba(152, 217, 213, 0.5);
+  --transwhite: rgba(255, 255, 255, 0);
 }
 
 
@@ -20,6 +22,11 @@ body {
 html, body, #root {
   min-height: 100%;
   height: 100%;
+  
+}
+
+body {
+  overflow-y: scroll;
 }
 
 * {
@@ -27,17 +34,18 @@ html, body, #root {
   padding: 0;
 }
 
-button {
+button, input[type="range"], input[type="color"] {
   cursor: pointer;
 }
 
 #start-screen-wrap, #lobby-wrap {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
 #start-screen-wrap .start-main-div{
@@ -100,6 +108,10 @@ button {
   font-size: 40px;
   margin-bottom: 40px;
 }
+#lobby-wrap h1 {
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
 
 #start-screen-wrap label{
   margin-top: 5px;
@@ -108,10 +120,11 @@ button {
 #lobby-wrap h2 {
   color: var(--dark-blue);
   font-size: 30px;
-  margin: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-.start-button-main {
+.start-button-main, #lobby-wrap table button{
   width: 200px;
   margin: 10px;
   padding: 20px 0;
@@ -123,6 +136,11 @@ button {
   border-radius: 10px;
   background: linear-gradient(var(--orange-light), var(--orange-dark));
   border: none;
+}
+
+.start-button-main:hover {
+  color: var(--light-blue2);
+
 }
 
 .confirm-button {
@@ -138,8 +156,11 @@ button {
   border: none;
 }
 
-#lobby-wrap table {
+.confirm-button:hover {
+color: var(--orange-dark);
+}
 
+#lobby-wrap table, #round-info-wrap table{
 	width: 400px;
 	background-color: var(--light-blue);
 	color: var(--orange-light);
@@ -148,29 +169,84 @@ button {
   overflow: hidden;
 }
 
-#lobby-wrap tr {
+#player-info {
+  background-color: var(--dark-blue);
+  color: white;
+  border-collapse: collapse;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 60px;
+  width: 300px;
+  word-wrap: break-word;
+}
+
+#round-info-wrap table {
+	width: 300px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+#lobby-wrap tr, #round-info-wrap tr, #player-info tr {
   height: 40px;
 }
 
-#lobby-wrap td{
+#lobby-wrap td, #lobby-wrap th, #player-info td, #player-info th {
   padding: 10px;
 	border-bottom: 3px solid white;
 }
 
-#lobby-wrap tr:last-child td {
+#player-info td {
+  max-width: 100px;
+}
+
+#round-info-wrap td, #round-info-wrap tr{
+  padding: 10px;
+	border-bottom: 3px solid rgb(240, 240, 240);
+}
+
+#lobby-wrap tr:last-child td, #round-info-wrap tr:last-child td, #player-info tr:last-child td{
   border-bottom: none;
 }
 
+#lobby-wrap table input {
+  background-color: transparent; 
+  border: none; 
+  color: inherit;
+  resize: none;
+  outline: none;
+  font-size: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  width: 100%;
+}
+
+#lobby-wrap table button {
+  padding: 5px 10px;
+  margin: 0;
+  width: auto;
+  height: auto;
+  font-size: 12px;
+  color: var(--dark-blue);
+}
+
+#lobby-wrap table button:hover {
+  color: var(--orange-light);
+  background: transparent;
+  background-color: var(--dark-blue);
+}
+
+
 #lobby-wrap ul {
   text-align: center;
-  margin: 10px;
 	width: 300px;
 	background-color: var(--orange-light);
 	color: var(--light-blue);
   border-collapse: collapse;
   border-radius: 12px;
-  overflow: hidden;
   font-size: 18px;
+  list-style-type: none;
+  margin-bottom: 10px;
+  
 }
 
 #lobby-wrap li {
@@ -231,4 +307,244 @@ margin: 2px;
 	top:-12px;
 	font-size:12px;
 	color: var(--orange-light);
+}
+
+#round-info-wrap {
+  z-index: 3;
+  width: 600px;
+  position: fixed;
+  margin: 5% auto;
+  left: 0;
+  right: 0;
+  /* background: linear-gradient(var(--orange-light), var(--orange-dark)); */
+  background-color: rgb(240, 240, 240);
+  border: 5px solid var(--orange-light);
+  border-radius: 10px;
+  padding: 20px;
+  color: var(--dark-blue);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#round-info-wrap div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#round-info-wrap h1{
+  font-size: 30px;
+  margin: 10px;
+}
+
+#round-info-wrap h2{
+  font-size: 20px;
+  margin: 10px;
+}
+
+#round-info-wrap .input-container{
+	margin: 20px;
+}
+
+#palying-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100%;
+  background: linear-gradient(var(--transparent-light-blue), var(--transwhite) 50%, var(--transparent-light-blue)),
+              linear-gradient(45deg, var(--transparent-light-blue), var(--transwhite) 50%, var(--transparent-light-blue)),
+              linear-gradient(-45deg, var(--transparent-light-blue), var(--transwhite) 50%, var(--transparent-light-blue)),
+              linear-gradient(90deg, var(--transparent-light-blue), var(--transwhite) 50%, var(--transparent-light-blue));
+}
+
+#time-displayer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding-top: 10px;
+  padding-right: 20px;
+  padding-left: 30px;
+  padding-bottom: 20px;
+  border-radius: 0 0 0 50px;
+  font-size: 20px;
+  background-color: var(--orange-light);
+  color: var(--dark-blue);
+  font-weight: bold;
+}
+
+#word-displayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 10px;
+  padding-right: 30px;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  border-radius: 0 0 50px 0;
+  font-size: 20px;
+  background-color: var(--orange-light);
+  color: var(--dark-blue);
+  font-weight: bold;
+}
+
+#controllers {
+  position: relative;
+  margin: 0;
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 700px;
+  background-color: rgb(202, 202, 202);
+  border-radius: 10px;
+  text-align: center;
+}
+
+#controllers div {
+  position: relative;
+  height: 50px;
+  min-width: 50px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+#controllers div label{
+  position: absolute;
+  top: 0;
+}
+
+#controllers button {
+  position: absolute;
+  padding: 10px 20px;
+  right: 20px;
+  text-decoration: none;
+  outline: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border-radius: 5px;
+  background: linear-gradient(rgb(255, 91, 91), red);
+  border: none;
+}
+
+#controllers #pen-eraser-change {
+  cursor: pointer;
+  background-size: contain;
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+#drawer-icon {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 50%;
+  background-image: url("./icons/brush-big.png");
+  background-size: 22px 22px;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: rotate 1s linear infinite
+
+}
+
+@keyframes rotate {
+  0% {transform: rotate(20deg);}
+  50% {transform: rotate(0deg);}
+  100% {transform: rotate(20deg);}
+}
+
+#canvas-wrap {
+  margin: 10px;
+  margin-top: 60px;
+}
+
+#chat {
+  position: relative;
+  background-color: white;
+  width: 300px;
+  margin-top: 60px;
+  height: 574px;
+  border: 3px solid var(--dark-blue);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#chat input{
+  position: absolute;
+  padding: 5px;
+  border: 3px solid var(--orange-light);
+  border-radius: 3px;
+  bottom: 20px;
+  width: 240px;
+}
+
+#chat ul{
+  list-style-type: none;
+  display: flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#chat li {
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 240px;
+  padding: 5px;
+  padding-top: 15px;
+  margin: 3px 0;
+	position: relative;
+  background: rgb(204, 204, 204);
+  color: var(--dark-blue);
+  border-radius: .4em;
+
+}
+
+#chat li div:first-child {
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 13px;
+  color: var(--orange-dark);
+}
+
+#chat li:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+	border-right-color: rgb(204, 204, 204);
+	border-left: 0;
+	border-top: 0;
+	margin-top: -5px;
+	margin-left: -10px;
+}
+
+#word-input-info {
+  font-size: 10px;
+  text-align: center;
+}
+
+#not-startable {
+  color: red;
+  margin: 10px;
+  width: 400px;
+  text-align: center;
 }

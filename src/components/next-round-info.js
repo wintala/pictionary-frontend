@@ -1,11 +1,21 @@
 import React, {useState} from "react"
 
-const NextRoundInfo = ({socket, myTurn, turnPlayerName, game}) => {
+const NextRoundInfo = ({socket, myTurn, game}) => {
 	const [word, setWord] = useState("")
 
 	if (game.timeLeft !== 0) {
 		return null
 	}
+
+	const turnplayerName = () => {
+    const player = game.players.find(p => p.id === game.turnPlayer)
+    if (player) {
+      return player.name
+    }
+    else {
+      return null
+    }
+  }
 
 
 	const roundresults = (last) => (
@@ -23,15 +33,11 @@ const NextRoundInfo = ({socket, myTurn, turnPlayerName, game}) => {
 						<th>
 							Nimi
 						</th>
-						{last ? 
 						<th>
 							Pisteet
-						</th> :
-						<th>
-							Kierroksen pisteet
-						</th>}
+						</th>
 					</tr>
-					{game.players.map(p =>
+					{game.players.sort((a, b) => (b.pointsCurrentRound - a.pointsCurrentRound)).map(p =>
 					<tr key={p.id}>
 						<td>
 							{p.name}
@@ -52,26 +58,33 @@ const NextRoundInfo = ({socket, myTurn, turnPlayerName, game}) => {
 
 
 	return (
-	<div style={{border: "3px solid green"}}>
+	<div id="round-info-wrap">
 		{game.turnIndex !== 1 ?
-		roundresults(game.turnIndex === game.maxTurns + 1) :
+		<>
+		<div>Vastaus: {game.currentWord}</div>
+		{roundresults(game.turnIndex === game.maxTurns + 1)}
+		</>:
 		<h1>Peli alkaa</h1>
 		}
 		{game.turnIndex !== game.maxTurns + 1 ?
 		<div>
-			Seuraavana vuorossa: {turnPlayerName}
+			Seuraavana vuorossa: {turnplayerName()}
 		</div> :
-		<button onClick={() => socket.emit("startOver")}>Pelaa uudestaan</button>
+		<button className="confirm-button" onClick={() => socket.emit("startOver")}>Pelaa uudestaan</button>
 		}
 		{myTurn && !(game.turnIndex === game.maxTurns + 1)?
 		<div>
-			<input
-				type="text"
-				placeholder="word to draw"
-				value={word}
-				onChange={({ target }) => setWord(target.value)}
-			/>
-			<button onClick={() => socket.emit("nextTurn", word)}>Aloita vuoro</button>
+			<div className="input-container">
+				<input
+					type="text"
+					required
+					value={word}
+					onChange={({ target }) => setWord(target.value)}
+				/>
+				<label>Sana</label>
+				<div id="word-input-info">Kirjoita sana tai jätä tyhjäksi halutessasi satunnaisen sanan</div>
+			</div>
+			<button className="confirm-button" onClick={() => socket.emit("nextTurn", word) && setWord("")}>Aloita vuoro</button>
 		</div>: null}
 	</div>
 	)

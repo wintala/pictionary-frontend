@@ -7,29 +7,23 @@ import NextRoundInfo from "./components/next-round-info"
 import PlayerInfoList from "./components/player-info-list"
 import Lobby from "./components/lobby";
 
-const socket = socketIOClient("http://localhost:3001")
+const socket = socketIOClient()
 
 function App() {
   const name = useRef()
   const [game, setGame] = useState(null)
+  const [word, setWord] = useState("")
 
   useEffect(() => {
     socket.on('gameInfo', (data) => {
       setGame(data)
     })
+    socket.on('word', (data) => {
+      setWord(data)
+    })
     return () => socket.disconnect()
   }, [])
 
-
-  const turnplayerName = () => {
-    const player = game.players.find(p => p.id === game.turnPlayer)
-    if (player) {
-      return player.name
-    }
-    else {
-      return null
-    }
-  }
 
   return (
   <>
@@ -37,18 +31,19 @@ function App() {
       <StartScreen socket={socket} name={name} />: 
     <>
     {game.started ? 
-    <>
+    <div id="palying-wrap">
     <NextRoundInfo 
       socket={socket} 
-      myTurn={(name.current === turnplayerName())} 
-      turnPlayerName={turnplayerName()} 
+      myTurn={(socket.id === game.turnPlayer)}
       game={game}
     />
-    <PlayerInfoList players={game.players} turnPlayerName={turnplayerName()}/>
-    <Canvas socket={socket} myTurn={(name.current === turnplayerName()) && (game.timeLeft !== 0)} />
-    <Chat socket={socket} />
-    </> :
-    <Lobby socket={socket} game={game} myTurn={(name.current === turnplayerName())}/>}
+    <div id="time-displayer">Aika: {game.timeLeft}</div>
+    <div id="word-displayer">Sana: {word}</div>
+    <PlayerInfoList players={game.players} turnPlayer={game.turnPlayer}/>
+    <Canvas socket={socket} myTurn={(socket.id === game.turnPlayer) && (game.timeLeft !== 0)} />
+    <Chat socket={socket} name={name.current}/>
+    </div> :
+    <Lobby socket={socket} game={game} myTurn={(socket.id === game.turnPlayer)}/>}
     </>}
   </>
   )
